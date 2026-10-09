@@ -1,0 +1,111 @@
+[
+    {
+        "name": "BBC News",
+        "url": "https://feeds.bbci.co.uk/news/rss.xml",
+        "icon": "bbc",
+        "full_article_prompt": true
+    },
+    {
+        "name": "FOX NEWS Latest",
+        "url": "https://moxie.foxnews.com/feedburner/latest.xml",
+        "icon": "fox",
+        "full_article_prompt": true
+    },
+    {
+        "name": "NewsNation",
+        "url": "https://www.newsnationnow.com/feed/",
+        "icon": "rss",
+        "full_article_prompt": false
+    },
+    {
+        "name": "The Guardian",
+        "url": "https://www.theguardian.com/us/rss",
+        "icon": "rss",
+        "description_is_full_article": true,
+        "full_article_prompt": true
+    },
+    {
+        "name": "CBC Top Stories",
+        "url": "https://www.cbc.ca/webfeed/rss/rss-topstories",
+        "icon": "cbc",
+        "full_article_prompt": true
+    },
+    {
+        "name": "NBC News Top Stories",
+        "url": "https://feeds.nbcnews.com/nbcnews/public/news",
+        "icon": "nbc",
+        "full_article_prompt": false
+    },
+    {
+        "name": "Los Angeles Times",
+        "url": "https://www.latimes.com/local/rss2.0.xml",
+        "icon": "rss",
+        "full_article_prompt": true
+    },
+    {
+        "name": "News, Analysis and Opinion from POLITICO",
+        "url": "https://rss.politico.com/politics-news.xml",
+        "icon": "rss",
+        "full_article_prompt": false
+    },
+    {
+        "name": "NPR World",
+        "url": "https://feeds.npr.org/1004/rss.xml",
+        "icon": "npr",
+        "full_article_prompt": true
+    },
+    {
+        "name": "NPR Nation",
+        "url": "https://feeds.npr.org/1003/rss.xml",
+        "icon": "npr",
+        "full_article_prompt": true
+    },
+    {
+        "name": "ESPN Top Stories",
+        "url": "https://www.espn.com/espn/rss/news",
+        "icon": "espn",
+        "full_article_prompt": true
+    },
+    {
+        "name": "The Onion",
+        "url": "https://theonion.com/feed/",
+        "icon": "happy",
+        "full_article_prompt": true
+    },
+    {
+        "name": "Newsweek Latest News",
+        "url": "https://www.newsweek.com/rss",
+        "icon": "rss",
+        "full_article_prompt": true
+    },
+    {
+        "name": "Kotaku",
+        "url": "https://kotaku.com/rss",
+        "icon": "kotaku",
+        "full_article_prompt": true
+    },
+    {
+        "name": "Hackaday",
+        "url": "https://hackaday.com/blog/feed/",
+        "icon": "hackaday",
+        "full_article_prompt": true
+    },
+    {
+        "name": "BBS Retro News: BBS and the Scene Updates",
+        "url": "https://x-bit.org/rss/rss.xml",
+        "icon": "xnews",
+        "full_article_prompt": false
+    },
+    {
+        "name": "2600 News - 2600: The Hackers Quarterly",
+        "url": "https://www.2600.com/rss.xml",
+        "icon": "rss",
+        "full_article_prompt": false
+    },
+    {
+        "name": "History Today Feed",
+        "url": "https://www.historytoday.com/feed/rss.xml",
+        "icon": "rss",
+        "full_article_prompt": true
+    }
+]
