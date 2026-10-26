@@ -1,5 +1,5 @@
 NewsCenter
-version 0.261002 
+version 0.261026 
 
 by Craig Hendricks  
 codefenix@conchaos.synchro.net
@@ -13,7 +13,7 @@ codefenix@conchaos.synchro.net
 
 Description:
 
-  A new RSS feed viewer for Synchronet BBS, which lets users read the
+  A news RSS feed viewer for Synchronet BBS, which lets users read the
   article text in the BBS terminal.
   
   
@@ -146,6 +146,11 @@ Thanks & Greetz:
 
 
 Version History:
+
+v 0.261026 - October 26, 2026:
+
+  + Fixed a RegEx issue that caused slashes (/) to not show up in the article
+    lists.
 
 v 0.261002 - October 2, 2026:
 

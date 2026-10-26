@@ -40,7 +40,12 @@ function displayText(article_text, article_title) {
     const TEMP_NEWS_FILE = backslash(TEMP_PATH) + "temp-news.msg";
     var ftext = new File(TEMP_NEWS_FILE);
     ftext.open("w", false);
-    ftext.write(article_text + "\x01n\x01b\x01h/===END===/" );
+    ftext.write(
+        article_text.replace(/&#x27;/g, "'")
+                    .replace(/&#8217;/g, "'")
+                    .replace(/&#8220;/g, '"') 
+                    .replace(/&#8221;/g, '"') +
+        "\x01n\x01b\x01h/===END===/" );
     ftext.close();
     if (file_exists(SCROLLER_PATH)) {
         bbs.exec( format(SCROLLER_CMD_FMT, SCROLLER_PATH, TEMP_NEWS_FILE, article_title.replace(/[^a-zA-Z0-9 \-,.'":!\@#$%\^&\*\(\)\[\]]/g, ""), "top" ), 0, EXEC_PATH );
@@ -355,9 +360,9 @@ function feedMenu(feedsource) {
         console.center("\x01w\x01hQ\x01k\x01\h) \x01w\x01hQ\x01nuit to Feed Menu");
         var lbArticleMenu = new DDLightbarMenu(1, startY+3, WIDTH-1, HEIGHT - (startY+5));
         for (var i = 0; i < rss.items.length; i++) {
-            lbArticleMenu.Add(format(WIDTH >= 132 ? "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-110.110s\x01n \x01b\x01h%-8.8s" : "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-65.65s\x01n \x01b\x01h%-8.8s",
+            lbArticleMenu.Add(format(WIDTH >= 132 ? "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-109.109s\x01n \x01b\x01h%-9.9s" : "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-64.64s\x01n \x01b\x01h%-9.9s",
                                      i+1,
-                                     utf8_decode(rss.items[i].title).replace(/[^a-zA-Z0-9 \-,.'":!\@#$%\^&\*\(\)\[\]]/g, ""),
+                                     utf8_decode(rss.items[i].title).replace(/[^a-zA-Z0-9 \-,.'":!/\@#$%\^&\*\(\)\[\]]/g, ""),
                                      system.datestr(new Date(rss.items[i].date).getTime() / 1000) ), i+1 );
         }
         lbArticleMenu.AddAdditionalQuitKeys("qQ");
