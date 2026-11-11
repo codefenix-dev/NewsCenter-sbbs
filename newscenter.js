@@ -21,7 +21,7 @@ load("frame.js");
 require("html2asc.js", 'html2asc');
 require("dd_lightbar_menu.js", "DDLightbarMenu");
 
-const VERSION = "0.261002";
+const VERSION = "0.261110";
 const EXEC_PATH = backslash(js.exec_dir);
 const SCROLLER_PATH = "../xtrn/scroller/scroller.js";
 const SCROLLER_CMD_FMT = '?%s "%s" "%s" %s';
@@ -30,25 +30,31 @@ const WIDTH = console.screen_columns;
 const HEIGHT = console.screen_rows;
 const HDR_FILE = "newscenter" + (WIDTH >= 132 ? "_wide": "") + ".msg";
 const DIVIDER = "\x01n\x01b" + (new Array(WIDTH).join(ascii(196))) + "\x01n";
-const BW_TEXT = false;
-const USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0";
+const BW_TEXT = false; // change to true for plain, non-colorized text
+const USER_AGENT = "Mozilla/5.0 (X11; " + (system.platform.indexOf("Win") >= 0 ? "Windows" : system.platform) + " " + system.architecture + "; rv:128.0) Gecko/20100101 Firefox/128.0"; // this is complete BS
 const FETCH_ATTEMPTS = 3;
 const USE_CURL = true;          // download articles with the external curl program first (see fetchPageCurl)
 const CURL_CMD = "curl";        // full path to curl if it isn't in the sbbs process's PATH
+
+function decodeAndConvert(text) {
+    return utf8_decode( text.replace(/&#x27;/g, "'")
+                            .replace(/&#x39;/g, "'")
+                            .replace(/&#8211;/g, "-")
+                            .replace(/&#8216;/g, "'")
+                            .replace(/&#8217;/g, "'")
+                            .replace(/&#8220;/g, '"') 
+                            .replace(/&#8221;/g, '"') 
+                            .replace(/&#8230;/g, '...') );
+}
 
 function displayText(article_text, article_title) {
     const TEMP_NEWS_FILE = backslash(TEMP_PATH) + "temp-news.msg";
     var ftext = new File(TEMP_NEWS_FILE);
     ftext.open("w", false);
-    ftext.write(
-        article_text.replace(/&#x27;/g, "'")
-                    .replace(/&#8217;/g, "'")
-                    .replace(/&#8220;/g, '"') 
-                    .replace(/&#8221;/g, '"') +
-        "\x01n\x01b\x01h/===END===/" );
+    ftext.write( decodeAndConvert( article_text ) + "\x01n\x01b\x01h/===END===/" );
     ftext.close();
     if (file_exists(SCROLLER_PATH)) {
-        bbs.exec( format(SCROLLER_CMD_FMT, SCROLLER_PATH, TEMP_NEWS_FILE, article_title.replace(/[^a-zA-Z0-9 \-,.'":!\@#$%\^&\*\(\)\[\]]/g, ""), "top" ), 0, EXEC_PATH );
+        bbs.exec( format(SCROLLER_CMD_FMT, SCROLLER_PATH, TEMP_NEWS_FILE, decodeAndConvert(article_title)/*.replace(/[^a-zA-Z0-9 \-,.'":!\@#$%\^&\*\(\)\[\]]/g, "")*/, "top" ), 0, EXEC_PATH );
     } else {
         console.clear(false);
         console.printfile(TEMP_NEWS_FILE);        
@@ -271,7 +277,7 @@ function getFullArticle(article_url, article_title) {
         }
 
         displayText("\x01q\x01l" +
-            utf8_decode(html2asc(scrapeArticleText(resp), BW_TEXT))  // convert the extracted content to ascii
+            decodeAndConvert(html2asc(scrapeArticleText(resp), BW_TEXT))  // convert the extracted content to ascii
                 .replace(/\[(.|\n|\r)*?\]/g, "")  // strip out text between [] brackets, usually embedded urls, etc.
                 .replace(/\r/g, "")
                 .replace(/\n\n/g, "\x01n\n\n"),   // correct for colors that don't cancel
@@ -293,7 +299,7 @@ function showArticle(title, author, date, body, full_article_prompt, article_url
     if (body.search(/<\/?[a-z][\s\S]*>/i) >= 0) { // only convert html to ascii
         body = html2asc(body, BW_TEXT, true);     // if there's html in the body
     }
-    print(lfexpand(word_wrap(utf8_decode(body), WIDTH-1, WIDTH-1, true, true)));
+    print(lfexpand(word_wrap(decodeAndConvert(body), WIDTH-1, WIDTH-1, true, true)));
 
     if (full_article_prompt) {
         if (!console.noyes("Read full article text")) {
@@ -349,7 +355,7 @@ function feedMenu(feedsource) {
 
         var frame = new Frame(31, 3, 49, 5, BG_BLACK);
         frame.open();
-        frame.putmsg("\x01k\x01h" + lfexpand(word_wrap(utf8_decode(rss.description.trim()), 49, 49, true, true)).trim());
+        frame.putmsg("\x01k\x01h" + lfexpand(word_wrap(decodeAndConvert(rss.description.trim()), 49, 49, true, true)).trim());
         frame.cycle();
 
         console.gotoxy(1, startY);
@@ -362,7 +368,7 @@ function feedMenu(feedsource) {
         for (var i = 0; i < rss.items.length; i++) {
             lbArticleMenu.Add(format(WIDTH >= 132 ? "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-109.109s\x01n \x01b\x01h%-9.9s" : "\x01c\x01h%2d\x01k\x01h)\x01n \x01w\x01h%-64.64s\x01n \x01b\x01h%-9.9s",
                                      i+1,
-                                     utf8_decode(rss.items[i].title).replace(/[^a-zA-Z0-9 \-,.'":!/\@#$%\^&\*\(\)\[\]]/g, ""),
+                                     decodeAndConvert(rss.items[i].title)/*.replace(/[^a-zA-Z0-9 \-,.'":!/\@#$%\^&\*\(\)\[\]]/g, "")*/,
                                      system.datestr(new Date(rss.items[i].date).getTime() / 1000) ), i+1 );
         }
         lbArticleMenu.AddAdditionalQuitKeys("qQ");
@@ -382,18 +388,18 @@ function feedMenu(feedsource) {
             selection = parseInt(selection) - 1;
             last_selected = selection;
             if (feedsource.description_is_full_article) {
-                displayText("\x01q\x01l" + utf8_decode(html2asc((rss.items[selection].body ?
+                displayText("\x01q\x01l" + decodeAndConvert(html2asc((rss.items[selection].body ?
                                      rss.items[selection].body :
                                      rss.items[selection].content), BW_TEXT)) 
                         .replace(/\r/g, "")
-                    , utf8_decode(rss.items[selection].title));
+                    , decodeAndConvert(rss.items[selection].title));
             } else {
-                showArticle(utf8_decode(rss.items[selection].title),
+                showArticle(decodeAndConvert(rss.items[selection].title),
                             rss.items[selection].author,
                             rss.items[selection].date,
-                            (rss.items[selection].body ?
+                            decodeAndConvert((rss.items[selection].body ?
                              rss.items[selection].body :
-                             rss.items[selection].content),
+                             rss.items[selection].content)),
                             feedsource.full_article_prompt,
                             rss.items[selection].link);
             }
