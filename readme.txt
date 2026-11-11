@@ -1,5 +1,5 @@
 NewsCenter
-version 0.261026 
+version 0.261111
 
 by Craig Hendricks  
 codefenix@conchaos.synchro.net
@@ -146,6 +146,13 @@ Thanks & Greetz:
 
 
 Version History:
+
+v 0.261111 - November 11, 20216:
+
+  + Reworked UTF8 character and XML entity substitutions in both 
+    newscenter.js and rss-curl.js.
+  + Improved article scraping logic.
+  
 
 v 0.261026 - October 26, 2026:
 

@@ -120,6 +120,17 @@
 
 load("http.js");
 
+function decodeXmlEntities(text) {
+    return text.replace(/&#x27;/g, "'")
+				.replace(/&#x39;/g, "'")
+				.replace(/&#8211;/g, "-")
+				.replace(/&#8216;/g, "'")
+				.replace(/&#8217;/g, "'")
+				.replace(/&#8220;/g, '"') 
+				.replace(/&#8221;/g, '"') 
+				.replace(/&#8230;/g, '...');
+}
+
 var Item = function (i) {
 
 	this.id = i.guid.length() ? i.guid[0].toString() : (i.id.length() ? i.id[0].toString() : '');
@@ -230,7 +241,8 @@ var Feed = function (url, follow_redirects, temp_file) {
 		} else {
 			
 			doc = fetchFeedCurl(url, temp_file);
-			if (!doc) {				
+			
+			if (typeof doc == "undefined" || doc == "") {				
 				var httpRequest = new HTTPRequest();
 				httpRequest.follow_redirects = follow_redirects || 0;
 				doc = httpRequest.Get(url);
@@ -240,7 +252,7 @@ var Feed = function (url, follow_redirects, temp_file) {
 				httpRequest = undefined;
 			}
 		}
-        var feed = toLocal(new XML(doc.replace(/^<\?xml.*\?>/g, "")));
+        var feed = toLocal(new XML(decodeXmlEntities(doc).replace(/^<\?xml.*\?>/g, "")));
         doc = undefined;
 		switch (feed.localName()) {
 			case "rss":
